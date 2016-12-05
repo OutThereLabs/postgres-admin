@@ -92,4 +92,4 @@ parameters:
 - description: AWS s3 backup path within bucket
   displayName: AWS S3 bucket path
   name: S3_PATH
-  required: true
+  required: false
