@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: pg-backup
+metadata:
+  annotations:
+    description: PostgreSQL to AWS S3 backup job
+    tags: db,backup,postgresql
+  name: pg-backup
+objects:
+- apiVersion: batch/v2alpha1
+  kind: ScheduledJob
+  metadata:
+    name: pg-backup
+  spec:
+    schedule: '* * */1 *'
+    jobTemplate:
+      spec:
+        template:
+          spec:
+            containers:
+              - env:
+                - name: POSTGRESQL_DATABASE
+                  value: ${POSTGRESQL_DATABASE}
+                - name: POSTGRESQL_HOST
+                  value: ${POSTGRESQL_HOST}
+                - name: POSTGRESQL_PORT
+                  value: ${POSTGRESQL_PORT}
+                - name: POSTGRESQL_USER
+                  value: ${POSTGRESQL_USER}
+                - name: POSTGRESQL_PASSWORD
+                  value: ${POSTGRESQL_PASSWORD}
+                - name: POSTGRESQL_EXTRA_OPTS
+                  value: ${POSTGRESQL_EXTRA_OPTS}
+                - name: AWS_ACCESS_KEY_ID
+                  value: ${AWS_ACCESS_KEY_ID}
+                - name: AWS_SECRET_ACCESS_KEY
+                  value: ${AWS_SECRET_ACCESS_KEY}
+                - name: AWS_DEFAULT_REGION
+                  value: ${AWS_DEFAULT_REGION}
+                - name: S3_BUCKET
+                  value: ${S3_BUCKET}
+                - name: S3_PATH
+                  value: ${S3_PATH}
+              - name: pg-backup
+                image: outtherelabs/pg-backup
+                command: ["baskup.sh"]
+            restartPolicy: Never
+parameters:
+- description: The name of the postgres database
+  displayName: Postgres database
+  name: POSTGRESQL_DATABASE
+  required: true
+- description: The postgres database host
+  displayName: Postgres host
+  name: POSTGRESQL_HOST
+  required: true
+- description: The postgres database port
+  displayName: Postgres port
+  name: POSTGRESQL_PORT
+  required: true
+  value: '5432'
+- description: The postgres user name
+  displayName: Postgres user name
+  name: POSTGRESQL_USER
+  required: true
+- description: The postgres user password
+  displayName: Postgres user password
+  name: POSTGRESQL_PASSWORD
+  required: true
+- description: Extra postgres backup cli options
+  displayName: Postgres backup extra options
+  name: POSTGRESQL_EXTRA_OPTS
+  required: false
+- description: AWS access key for S3 storage
+  displayName: AWS access key
+  name: AWS_ACCESS_KEY_ID
+  required: true
+- description: AWS secret access key for S3 storage
+  displayName: AWS secret access key
+  name: AWS_SECRET_ACCESS_KEY
+  required: true
+- description: AWS default region for s3
+  displayName: AWS default region
+  name: AWS_DEFAULT_REGION
+  required: true
+- description: AWS s3 bucket name
+  displayName: AWS S3 bucket
+  name: S3_BUCKET
+  required: true
+- description: AWS s3 backup path within bucket
+  displayName: AWS S3 bucket path
+  name: S3_PATH
+  required: true
