@@ -84,6 +84,7 @@ parameters:
   displayName: AWS default region
   name: AWS_DEFAULT_REGION
   required: true
+  value: us-west-2
 - description: AWS s3 bucket name
   displayName: AWS S3 bucket
   name: S3_BUCKET
