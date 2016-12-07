@@ -43,6 +43,7 @@ objects:
               value: ${S3_PATH}
             name: ${NAME}
             image: outtherelabs/postgres-admin
+            imagePullPolicy: Always
             command: ["/backup.sh"]
         restartPolicy: Never
 parameters:
