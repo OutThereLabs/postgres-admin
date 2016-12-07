@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 set -euo pipefail
 
 if [ "${AWS_ACCESS_KEY_ID}" = "**None**" ]; then
