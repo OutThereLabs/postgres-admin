@@ -25,4 +25,6 @@ ENV S3_PATH 'backups'
 
 ADD backup.sh backup.sh
 
+VOLUME ["/var/backups"]
+
 CMD ["sh", "backup.sh"]

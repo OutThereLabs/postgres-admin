@@ -40,9 +40,9 @@ export PGPASSWORD=$POSTGRESQL_PASSWORD
 POSTGRESQL_CONNECTION_OPTS="-h $POSTGRESQL_HOST -p $POSTGRESQL_PORT -U $POSTGRESQL_USER $POSTGRESQL_EXTRA_OPTS"
 
 echo "Creating dump of ${POSTGRESQL_DATABASE} database from ${POSTGRESQL_HOST}..."
-pg_dump $POSTGRESQL_CONNECTION_OPTS $POSTGRESQL_DATABASE | gzip > dump.sql.gz
+pg_dump $POSTGRESQL_CONNECTION_OPTS $POSTGRESQL_DATABASE | gzip > /var/backups/dump.sql.gz
 
 echo "Uploading dump to $S3_BUCKET"
-cat dump.sql.gz | aws s3 cp - s3://$S3_BUCKET/$S3_PATH/$(date +"%Y-%m-%dT%H:%M:%SZ").sql.gz || exit 2
+cat /var/backups/dump.sql.gz | aws s3 cp - s3://$S3_BUCKET/$S3_PATH/$(date +"%Y-%m-%dT%H:%M:%SZ").sql.gz || exit 2
 
 echo "SQL backup uploaded successfully"
