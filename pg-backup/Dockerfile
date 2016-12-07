@@ -6,10 +6,10 @@ USER root
 # Install AWS SDK
 RUN yum -y update && \
     yum -y install epel-release && \
-    yum clean all && \
-    yum -y install python-pip \
+    yum -y install python-pip && \
     pip install awscli && \
-    yum -y remove python-pip
+    yum -y remove python-pip && \
+    yum clean all
 
 ENV POSTGRESQL_DATABASE **None**
 ENV POSTGRESQL_HOST **None**
@@ -25,6 +25,8 @@ ENV S3_PATH 'backups'
 
 ADD backup.sh backup.sh
 
-VOLUME ["/var/backups"]
+RUN mkdir /var/backups && chmod g+rw /var/backups
+
+VOLUME /var/backups
 
 CMD ["sh", "backup.sh"]
