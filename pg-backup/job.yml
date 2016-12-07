@@ -8,44 +8,43 @@ metadata:
     tags: db,backup,postgresql
   name: pg-backup
 objects:
-- apiVersion: batch/v2alpha1
-  kind: ScheduledJob
+- apiVersion: batch/v1
+  kind: Job
   metadata:
     name: ${NAME}
   spec:
-    schedule: '* * */1 *'
-    jobTemplate:
+    parallelism: 1
+    completions: 1
+    template:
       spec:
-        template:
-          spec:
-            containers:
-              - env:
-                - name: POSTGRESQL_DATABASE
-                  value: ${POSTGRESQL_DATABASE}
-                - name: POSTGRESQL_HOST
-                  value: ${POSTGRESQL_HOST}
-                - name: POSTGRESQL_PORT
-                  value: ${POSTGRESQL_PORT}
-                - name: POSTGRESQL_USER
-                  value: ${POSTGRESQL_USER}
-                - name: POSTGRESQL_PASSWORD
-                  value: ${POSTGRESQL_PASSWORD}
-                - name: POSTGRESQL_EXTRA_OPTS
-                  value: ${POSTGRESQL_EXTRA_OPTS}
-                - name: AWS_ACCESS_KEY_ID
-                  value: ${AWS_ACCESS_KEY_ID}
-                - name: AWS_SECRET_ACCESS_KEY
-                  value: ${AWS_SECRET_ACCESS_KEY}
-                - name: AWS_DEFAULT_REGION
-                  value: ${AWS_DEFAULT_REGION}
-                - name: S3_BUCKET
-                  value: ${S3_BUCKET}
-                - name: S3_PATH
-                  value: ${S3_PATH}
-                name: $NAME
-                image: outtherelabs/postgres-admin
-                command: ["/backup.sh"]
-            restartPolicy: Never
+        containers:
+          - env:
+            - name: POSTGRESQL_DATABASE
+              value: ${POSTGRESQL_DATABASE}
+            - name: POSTGRESQL_HOST
+              value: ${POSTGRESQL_HOST}
+            - name: POSTGRESQL_PORT
+              value: ${POSTGRESQL_PORT}
+            - name: POSTGRESQL_USER
+              value: ${POSTGRESQL_USER}
+            - name: POSTGRESQL_PASSWORD
+              value: ${POSTGRESQL_PASSWORD}
+            - name: POSTGRESQL_EXTRA_OPTS
+              value: ${POSTGRESQL_EXTRA_OPTS}
+            - name: AWS_ACCESS_KEY_ID
+              value: ${AWS_ACCESS_KEY_ID}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: ${AWS_SECRET_ACCESS_KEY}
+            - name: AWS_DEFAULT_REGION
+              value: ${AWS_DEFAULT_REGION}
+            - name: S3_BUCKET
+              value: ${S3_BUCKET}
+            - name: S3_PATH
+              value: ${S3_PATH}
+            name: ${NAME}
+            image: outtherelabs/postgres-admin
+            command: ["/backup.sh"]
+        restartPolicy: Never
 parameters:
 - description: The name of the job
   displayName: Name of the job
