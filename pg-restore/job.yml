@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Template
 labels:
-  template: pg-backup
+  template: pg-restore
 metadata:
   annotations:
-    description: PostgreSQL to AWS S3 backup job
-    tags: db,backup,postgresql
-  name: pg-backup
+    description: PostgreSQL restore from AWS S3 backup
+    tags: db,restore,postgresql
+  name: pg-restore
 objects:
 - apiVersion: batch/v1
   kind: Job
@@ -41,10 +41,14 @@ objects:
               value: ${S3_BUCKET}
             - name: S3_PATH
               value: ${S3_PATH}
+            - name: DROP_PUBLIC
+              value: ${DROP_PUBLIC}
+            - name: BACKUP_FILE_NAME
+              value: ${BACKUP_FILE_NAME}
             name: ${NAME}
-            image: outtherelabs/pg-backup
+            image: outtherelabs/pg-restore
             imagePullPolicy: Always
-            command: ["/backup.sh"]
+            command: ["/restore.sh"]
         restartPolicy: Never
 parameters:
 - description: The name of the job
@@ -97,3 +101,13 @@ parameters:
   displayName: AWS S3 bucket path
   name: S3_PATH
   required: false
+- description: Drop postgres public schema before restore
+  displayName: Drop bublic schema
+  name: DROP_PUBLIC
+  required: true
+  value: 'no'
+- description: Name of the file in S3, use 'latest' to pull latest backup
+  displayName: Backup file name
+  name: BACKUP_FILE_NAME
+  required: true
+  value: 'latest'
