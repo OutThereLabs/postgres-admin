@@ -40,11 +40,11 @@ export PGPASSWORD=$POSTGRESQL_PASSWORD
 POSTGRESQL_CONNECTION_OPTS="-h $POSTGRESQL_HOST -p $POSTGRESQL_PORT -U $POSTGRESQL_USER $POSTGRESQL_EXTRA_OPTS"
 
 if [ "${BACKUP_FILE_NAME}" = "latest" ]; then
-  BACKUP_FILE_NAME=$(aws s3 ls s3://$S3_BUCKET/$S3_PREFIX | sort | tail -n 1 | awk '{ print $4 }')
+  BACKUP_FILE_NAME=$(aws s3 ls s3://$S3_BUCKET/$S3_PATH | sort | tail -n 1 | awk '{ print $4 }')
 fi
 echo "Getting db backup ${BACKUP_FILE_NAME} from S3"
 
-aws s3 cp s3://$S3_BUCKET/$S3_PREFIX${BACKUP_FILE_NAME} /var/restore/dump.sql.gz
+aws s3 cp s3://$S3_BUCKET/$S3_PATH${BACKUP_FILE_NAME} /var/restore/dump.sql.gz
 gzip -d /var/ressstore/dump.sql.gz
 
 if [ "${DROP_PUBLIC}" == "yes" ]; then
