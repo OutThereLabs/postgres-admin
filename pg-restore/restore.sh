@@ -49,7 +49,7 @@ gzip -d /var/restore/dump.sql.gz
 
 if [ "${DROP_PUBLIC}" == "yes" ]; then
 	echo "Recreating the public schema"
-	psql $POSTGRES_HOST_OPTS -d $POSTGRES_DATABASE -c "drop schema public cascade; create schema public;"
+	psql $POSTGRESQL_CONNECTION_OPTS -d $POSTGRES_DATABASE -c "drop schema public cascade; create schema public;"
 fi
 
 echo "Restoring ${BACKUP_FILE_NAME}"
