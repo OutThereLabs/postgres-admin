@@ -45,7 +45,7 @@ fi
 echo "Getting db backup ${BACKUP_FILE_NAME} from S3"
 
 aws s3 cp s3://$S3_BUCKET/$S3_PATH${BACKUP_FILE_NAME} /var/restore/dump.sql.gz
-gzip -d /var/ressstore/dump.sql.gz
+gzip -d /var/restore/dump.sql.gz
 
 if [ "${DROP_PUBLIC}" == "yes" ]; then
 	echo "Recreating the public schema"
